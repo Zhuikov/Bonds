@@ -8,11 +8,6 @@ import requests
 
 from .BondParams import BondParams
 
-
-class ParamsGetterType(enum.Enum):
-    MOEX_GETTER = enum.auto()
-
-
 class ParamsGetter(metaclass=abc.ABCMeta):
     @abc.abstractstaticmethod
     async def getBondParams(secid) -> BondParams:
@@ -37,7 +32,6 @@ class ParamsGetterMoex(ParamsGetter):
         if response.status_code != 200:
             # TODO
             print("Bad response")
-        # res = response.result()
         return ParamsGetterMoex.__parseResponse(response.text)
 
     @staticmethod
@@ -57,3 +51,11 @@ class ParamsGetterMoex(ParamsGetter):
         bondParams.duration = marketdata["DURATION"]
 
         return bondParams
+
+class ParamsGetterType(enum.Enum):
+    MOEX_GETTER = enum.auto()
+
+    def getParamGetterFunction(self, type2func={
+            MOEX_GETTER: ParamsGetterMoex.getBondParams
+    }):
+        return type2func.get(self, None)
