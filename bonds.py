@@ -2,19 +2,19 @@
 import asyncio
 
 from bonds import Bond
-
-bonds = [Bond("RU000A0JX0B9"), Bond("SU26220RMFS2")]
+from bondsRepoters import ConsoleReporter
+from bondsManager import BondManager, BondRepositoryJson
 
 async def main():
-    done, pending = await asyncio.wait([
-        b.initializeBondParams() for b in bonds], timeout=1)
-    print("done", done)
-    for f in pending:
-        print(f)
+    repository = BondRepositoryJson("bonds.json")
 
-    for b in bonds:
-        print(b)
+    manager = BondManager(repository)
+    repository.commit()
+    done, pending = await asyncio.wait((manager.initializeBondsParams(),), timeout=3)
+    
+    consoleReporter = ConsoleReporter()
+    consoleReporter.report(manager.getBonds())
 
 ioloop = asyncio.get_event_loop()
 ioloop.run_until_complete(main())
-# ioloop.close()
+ioloop.close()

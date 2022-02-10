@@ -1,12 +1,6 @@
 import asyncio
-import json
-import bonds
 from bonds.BondParamsGetters import ParamsGetterType
 
-class CorruptedBondRepresentation(Exception):
-    def __init__(self, msg, errors) -> None:
-        super().__init__(msg)
-        self.errors = errors
 
 class BondManager:
 
@@ -16,7 +10,7 @@ class BondManager:
 
     async def initializeBondsParams(self, getterType=ParamsGetterType.MOEX_GETTER, timeout=2):
         if not self._bonds:
-            print("Bonds not found in %s" % self._bondsPath)
+            print("Empty bonds")
             return False
 
         futures = [b.initializeBondParams(getterType) for b in self._bonds]
@@ -27,3 +21,6 @@ class BondManager:
             print("Warning: following bonds are not initialized: %s" % notInitBonds)
 
         return len(done) == len(self._bonds)
+
+    def getBonds(self):
+        return self._bonds

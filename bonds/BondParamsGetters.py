@@ -45,9 +45,9 @@ class ParamsGetterMoex(ParamsGetter):
         bondParams.marketPrice = marketdata["MARKETPRICE"]
         bondParams.accruedInt = securities["ACCRUEDINT"]
         bondParams.couponValue = securities["COUPONVALUE"]
-        bondParams.couponNext = datetime.datetime.strptime(securities["NEXTCOUPON"], "%Y-%m-%d")
+        bondParams.couponNext = datetime.datetime.strptime(securities["NEXTCOUPON"], "%Y-%m-%d").date()
         bondParams.couponPeriod = securities["COUPONPERIOD"]
-        bondParams.matdate = datetime.datetime.strptime(securities["MATDATE"], "%Y-%m-%d")
+        bondParams.matdate = datetime.datetime.strptime(securities["MATDATE"], "%Y-%m-%d").date()
         bondParams.duration = marketdata["DURATION"]
 
         return bondParams
@@ -58,4 +58,4 @@ class ParamsGetterType(enum.Enum):
     def getParamGetterFunction(self, type2func={
             MOEX_GETTER: ParamsGetterMoex.getBondParams
     }):
-        return type2func.get(self, None)
+        return type2func.get(self.value, None)

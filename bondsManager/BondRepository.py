@@ -1,7 +1,13 @@
 import abc
 
-""" Stores uninitialized bonds """
+class CorruptedBondRepresentation(Exception):
+    def __init__(self, msg, errors) -> None:
+        super().__init__(msg)
+        self.errors = errors
+
+
 class BondRepository(metaclass=abc.ABCMeta):
+    """ Stores uninitialized bonds """
 
     def __init__(self) -> None:
         self._bondStoredFields = {"bondGroup", "number", "description"}
@@ -15,19 +21,23 @@ class BondRepository(metaclass=abc.ABCMeta):
     def commit(self):
         """Save self._bonds"""
 
-    def add(self, bond):
-        for b in self._bonds:
-            if b == bond:
-                b += bond
-                return
-        self._bonds.add(bond)
+    def add(self, *args):
+        for bond in args:
+            self.__add(bond)
 
-    def remove(self, secid: str):
-        bondToRemove = next((b for b in self._bonds if b.secid == secid), None)
+    def __add(self, bond):
+        if bond in self._bonds:
+            b = next(_ for _ in self._bonds if _ == bond)
+            b += bond
+        else:
+            self._bonds.add(bond)
+
+    def remove(self, secid, bondGroup):
+        bondToRemove = next((b for b in self._bonds if b.secid == secid and b.bondGroup is bondGroup), None)
         self._bonds.discard(bondToRemove)
 
-    def get(self, secid):
-        bond = next((b for b in self._bonds if b.secid == secid), None)
+    def get(self, secid, bondGroup):
+        bond = next((b for b in self._bonds if b.secid == secid and b.bondGroup is bondGroup), None)
         return bond
 
     def getAll(self):

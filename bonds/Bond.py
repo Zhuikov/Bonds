@@ -16,16 +16,16 @@ class BondGroup(enum.Enum):
             print("Unknown BondGroup: %s" % s)
             return None
 
-    def toString(self):
+    def __str__(self):
         return self.name.lower()
 
 
 class Bond:
 
-    def __init__(self, secid, bondGroup=BondGroup.IN_STOCK, number=0, description=""):
+    def __init__(self, secid, number=0, bondGroup=BondGroup.IN_STOCK, description=""):
         self.secid = secid
-        self.bondGroup = bondGroup
         self.number = number
+        self.bondGroup = bondGroup
         self.description = description
         self.params = BondParams()
 
@@ -35,7 +35,7 @@ class Bond:
         if self.paramsInitialized:
             return
         try:
-            self.params = await getterType.getParamGetterFunction(self.secid)
+            self.params = await getterType.getParamGetterFunction()(self.secid)
             self.paramsInitialized = True
         except Exception as e:
             print("Error while bond params initialization")
@@ -50,7 +50,7 @@ class Bond:
     def __add__(self, o):
         if self != o:
             raise ValueError("To add bonds they must be equal")
-        return Bond(self.secid, self.bondGroup, self.number + o.number, o.description)
+        return Bond(self.secid, self.number + o.number, self.bondGroup, o.description)
 
     def __str__(self) -> str:
         s = "%s: '%s' (%s)\n  " % (self.secid, self.description, self.number)

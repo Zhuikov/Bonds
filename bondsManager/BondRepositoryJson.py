@@ -2,6 +2,7 @@ from .BondRepository import BondRepository
 
 import bonds
 import json
+import os
 
 class BondRepositoryJson(BondRepository):
 
@@ -10,6 +11,9 @@ class BondRepositoryJson(BondRepository):
         super().__init__()
 
     def _initBonds(self) -> set:
+        if not os.path.isfile(self._jsonpath) or os.stat(self._jsonpath).st_size == 0:
+            return set()
+
         with open(self._jsonpath, "r") as inp:
             _bonds = json.load(inp)
 
@@ -30,7 +34,7 @@ class BondRepositoryJson(BondRepository):
         descr = obj["description"]
         number = obj["number"]
         group = bonds.BondGroup.fromString(obj["group"])
-        return bonds.Bond(secid, group, number, descr)
+        return bonds.Bond(secid, number, group, descr)
 
     @staticmethod
     def __bondToObj(bond: bonds.Bond):
@@ -38,5 +42,5 @@ class BondRepositoryJson(BondRepository):
             "secid": bond.secid,
             "description": bond.description,
             "number": bond.number,
-            "group": bond.bondGroup.toString()
+            "group": str(bond.bondGroup)
         }

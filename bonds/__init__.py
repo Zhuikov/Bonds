@@ -1,1 +1,1 @@
-from .Bond import Bond, BondGroup
+from .Bond import Bond, BondParams, BondGroup
