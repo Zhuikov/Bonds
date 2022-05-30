@@ -1,4 +1,3 @@
-from bonds import BondParams
 from itertools import chain
 
 
@@ -11,6 +10,7 @@ class ConsoleReporter:
         self._bondFiledsList = ["bondGroup", "number", "description"]
 
     def report(self, bonds, sortBy="couponNext"):
+        # TODO implement 'sortBy'
         allFields = list(chain(self._bondParamsFieldsList, self._bondFiledsList))
         if sortBy not in allFields:
             raise ValueError(f"'sortBy = {sortBy}' not found in bondFiledsList and in bondParamsFieldsList")

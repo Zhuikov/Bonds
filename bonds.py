@@ -1,16 +1,15 @@
 #!/usr/bin/python3
 import asyncio
 
-from bonds import Bond
 from bondsRepoters import ConsoleReporter
 from bondsManager import BondManager, BondRepositoryJson
 
 async def main():
-    repository = BondRepositoryJson("bonds.json")
+    repository = BondRepositoryJson("example.json")
 
     manager = BondManager(repository)
     repository.commit()
-    done, pending = await asyncio.wait((manager.initializeBondsParams(),), timeout=3)
+    await asyncio.wait((manager.initializeBondsParams(),), timeout=3)
     
     consoleReporter = ConsoleReporter()
     consoleReporter.report(manager.getBonds())

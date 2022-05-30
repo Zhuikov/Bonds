@@ -28,6 +28,7 @@ class BondRepository(metaclass=abc.ABCMeta):
     def __add(self, bond):
         if bond in self._bonds:
             b = next(_ for _ in self._bonds if _ == bond)
+            # b.number = 0
             b += bond
         else:
             self._bonds.add(bond)

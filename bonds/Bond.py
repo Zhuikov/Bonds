@@ -52,6 +52,13 @@ class Bond:
             raise ValueError("To add bonds they must be equal")
         return Bond(self.secid, self.number + o.number, self.bondGroup, o.description)
 
+    def __iadd__(self, o):
+        if self != o:
+            raise ValueError("To add bonds they must be equal")
+        self.number += o.number
+        return self
+        # return Bond(self.secid, self.number + o.number, self.bondGroup, o.description)
+
     def __str__(self) -> str:
         s = "%s: '%s' (%s)\n  " % (self.secid, self.description, self.number)
         s += str(self.params) if self.paramsInitialized else "not initialized"
